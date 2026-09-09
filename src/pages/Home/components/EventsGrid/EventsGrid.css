@@ -1,0 +1,82 @@
+/* ══════════════════════════════════════════════════════════════
+   EVENTS GRID — Home Page Component
+   Layout shell for EventCardPremium. Mobile-first, 4-col max.
+   ══════════════════════════════════════════════════════════════ */
+
+.events-grid-wrapper {
+  width: 100%;
+}
+
+/* ─── HEADER ─── */
+.events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+[data-theme='dark'] .events-header {
+  border-color: #27272a;
+}
+
+.events-title {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--text-primary, #000);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+[data-theme='dark'] .events-title {
+  color: #fff;
+}
+
+.events-count {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted, #71717a);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── GRID ─── */
+.events-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 480px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .events-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .events-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.35rem;
+  }
+}
+
+/* ─── PAGINATION ─── */
+.events-pagination {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0 1rem;
+}

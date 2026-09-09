@@ -1,0 +1,176 @@
+/* ============================================================
+   HOME PAGE — LAIKA CLUB
+   Full-width layout. No sidebars. Premium breathing room.
+   Mobile-first · Fluid · Clean
+   ============================================================ */
+
+/* ─── ROOT ─── */
+.home {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary, #fff);
+  padding-bottom: 5rem;
+}
+
+[data-theme='dark'] .home {
+  background: #09090b;
+}
+
+/* ─── MAIN CONTENT ─── */
+.home-main {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.75rem 1rem 2rem;
+}
+
+@media (min-width: 640px) {
+  .home-main {
+    padding: 2rem 1.5rem 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-main {
+    padding: 2.5rem 2.5rem 3.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .home-main {
+    padding: 2.5rem 4rem 4rem;
+  }
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.events-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.1rem;
+  padding: clamp(3rem, 10vw, 5rem) 1.5rem;
+  background: var(--bg-secondary, #fafafa);
+  border: 1.5px dashed var(--border-color, #e5e5e5);
+  border-radius: 20px;
+}
+
+[data-theme='dark'] .events-empty {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+.events-empty-icon {
+  color: var(--text-muted, #a1a1aa);
+  opacity: 0.4;
+}
+
+.events-empty-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary, #18181b);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+[data-theme='dark'] .events-empty-title {
+  color: #fafafa;
+}
+
+/* ============================================================
+   ERROR VIEW
+   ============================================================ */
+.home-error-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(3rem, 10vw, 6rem) 1.5rem;
+  width: 100%;
+  animation: home-fade-in 0.4s ease;
+}
+
+@keyframes home-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.home-error-view .error-code {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #94a3b8;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.1rem;
+  text-transform: uppercase;
+}
+
+.home-error-view .error-icon {
+  color: #ef4444;
+  margin-bottom: 1.35rem;
+}
+
+.home-error-view .error-title {
+  font-size: clamp(1.2rem, 4vw, 1.65rem);
+  font-weight: 900;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+[data-theme='dark'] .home-error-view .error-title {
+  color: #f3f4f6;
+}
+
+.home-error-view .error-message {
+  font-size: 0.9rem;
+  color: var(--text-muted, #6b7280);
+  max-width: 380px;
+  margin-bottom: 2rem;
+  line-height: 1.65;
+}
+
+[data-theme='dark'] .home-error-view .error-message {
+  color: #9ca3af;
+}
+
+.home-error-view .error-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ============================================================
+   SKELETON HERO
+   ============================================================ */
+.skeleton-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(340px, 56vw, 640px);
+  background: linear-gradient(110deg, #e2e8f0 8%, #f1f5f9 18%, #e2e8f0 33%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s linear infinite;
+}
+
+[data-theme='dark'] .skeleton-hero {
+  background: linear-gradient(110deg, #1c1c1e 8%, #2c2c2e 18%, #1c1c1e 33%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   SHOP SECTION — CTA & cards
+   (Preserved from original, no style changes)
+   ============================================================ */
+.home-shop-section {
+  margin: 3.5rem 0;
+  width: 100%;
+}
