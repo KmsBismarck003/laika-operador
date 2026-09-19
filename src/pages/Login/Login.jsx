@@ -256,7 +256,6 @@ const Login = () => {
             </div>
           </div>
           <h1 className='admin-login-title'>OPERADOR LAIKA</h1>
-          <p className='admin-login-subtitle'>Escáner de boletos y staff de barras</p>
         </div>
 
         <form onSubmit={handleSubmit} className='admin-login-form'>
