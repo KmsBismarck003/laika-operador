@@ -9,6 +9,9 @@ const TicketInfo = ({ ticket }) => {
       <div className="staff-info-row">
         <span className="staff-info-label">Titular / Asistente</span>
         <span className="staff-info-value highlight">{ticket.customerName || 'No especificado'}</span>
+        <div style={{ marginTop: '8px', padding: '8px', backgroundColor: 'rgba(255, 60, 60, 0.1)', border: '1px solid #ff3c3c', borderRadius: '4px', color: '#ff3c3c', fontSize: '0.85rem', fontWeight: 'bold' }}>
+          ⚠️ REQUERIDO: Solicitar identificación oficial (INE/DNI) y confirmar que coincida.
+        </div>
       </div>
 
       <div className="staff-info-row">
