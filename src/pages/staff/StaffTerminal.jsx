@@ -277,7 +277,7 @@ const StaffTerminal = () => {
                     <div className="staff-metric-card">
                         <div className="staff-metric-data">
                             <span className="staff-metric-label">Ingresos Válidos</span>
-                            <div className="staff-metric-number" style={{ color: 'var(--staff-status-valid)' }}><AnimatedCounter value={sessionStats.valids} /></div>
+                            <div className="staff-metric-number is-valid"><AnimatedCounter value={sessionStats.valids} /></div>
                         </div>
                         <div className="staff-metric-icon success"><Icon name="check" size={20} /></div>
                     </div>
@@ -285,7 +285,7 @@ const StaffTerminal = () => {
                     <div className="staff-metric-card">
                         <div className="staff-metric-data">
                             <span className="staff-metric-label">Alertas de Ingreso</span>
-                            <div className="staff-metric-number" style={{ color: 'var(--staff-status-error)' }}><AnimatedCounter value={sessionStats.invalids} /></div>
+                            <div className="staff-metric-number is-error"><AnimatedCounter value={sessionStats.invalids} /></div>
                         </div>
                         <div className="staff-metric-icon error"><Icon name="alertTriangle" size={20} /></div>
                     </div>
@@ -294,7 +294,7 @@ const StaffTerminal = () => {
                         <div className="staff-metric-data">
                             <span className="staff-metric-label">Flujo Operativo</span>
                             <div className="staff-metric-number">
-                                <AnimatedCounter value={Math.floor(sessionStats.total / Math.max(1, (new Date() - new Date(new Date().setHours(new Date().getHours() - 1))) / 60000)) || 0} /> <span style={{ fontSize: '1rem', fontWeight: 600, opacity: 0.6 }}>/min</span>
+                                <AnimatedCounter value={Math.floor(sessionStats.total / Math.max(1, (new Date() - new Date(new Date().setHours(new Date().getHours() - 1))) / 60000)) || 0} /> <span className="staff-metric-suffix">/min</span>
                             </div>
                         </div>
                         <div className="staff-metric-icon"><Activity size={20} /></div>
@@ -305,7 +305,7 @@ const StaffTerminal = () => {
                     {activeTab === 'scanner' && (
                         <div className="staff-scanner-view">
                             {alert && (
-                                <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', borderRadius: '8px', background: 'var(--staff-status-error-bg)', border: '1px solid var(--staff-status-error)', display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#fff', fontWeight: 600 }}>
+                                <div className="staff-alert-banner">
                                     <AlertCircle color="var(--staff-status-error)" size={20} />
                                     <span>{alert.message}</span>
                                 </div>
@@ -314,7 +314,7 @@ const StaffTerminal = () => {
                             {!verificationResult ? (
                                 <div className="staff-scanner-container">
                                     {isScanning ? (
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <div className="staff-inline-stack">
                                             <QRScanner onScanSuccess={(text) => handleVerifyTicket(text)} />
                                             <Button variant="secondary" fullWidth onClick={() => setIsScanning(false)}>
                                                 Cambiar a Ingreso Manual
@@ -329,7 +329,7 @@ const StaffTerminal = () => {
 
                                             <div className="staff-divider">INGRESO MANUAL DE CÓDIGO</div>
 
-                                            <form onSubmit={(e) => { e.preventDefault(); handleVerifyTicket(); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                            <form onSubmit={(e) => { e.preventDefault(); handleVerifyTicket(); }} className="staff-inline-stack">
                                                 <Input
                                                     label="Identificador de Boleto (Código Alfanumérico)"
                                                     value={ticketCode}
@@ -356,26 +356,26 @@ const StaffTerminal = () => {
                                     <TicketInfo ticket={verificationResult} />
                                     
                                     {(verificationResult.actionable || (verificationResult.status === 'valid' && !verificationResult.alreadyUsed)) && (
-                                        <Button variant="success" size="large" fullWidth onClick={handleRedeemTicket} style={{ marginBottom: '0.75rem' }}>
+                                        <Button variant="success" size="large" fullWidth onClick={handleRedeemTicket} className="staff-redeem-btn">
                                             Confirmar Acceso • Registrar Canje
                                         </Button>
                                     )}
                                     
-                                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-                                        <Button variant="secondary" style={{ flex: 1, minWidth: '160px' }} onClick={() => {
+                                    <div className="staff-inline-row">
+                                        <Button variant="secondary" onClick={() => {
                                             api.ticket.resendTicket(verificationResult.ticketCode);
                                             success('Confirmación de boleto reenviada al correo del asistente');
                                         }}>
                                             Reenviar Comprobante
                                         </Button>
-                                        <Button variant="primary" style={{ flex: 1, minWidth: '160px' }} onClick={resetScanner}>
+                                        <Button variant="primary" onClick={resetScanner}>
                                             Procesar Siguiente Boleto
                                         </Button>
                                     </div>
                                 </div>
                             )}
 
-                            <div style={{ marginTop: '2.5rem' }}>
+                            <div className="staff-stats-block">
                                 <StaffStats history={scanHistory} />
                             </div>
                         </div>
