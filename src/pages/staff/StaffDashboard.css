@@ -1,36 +1,48 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    LAIKA CLUB - OPERATOR (STAFF) DESIGN SYSTEM & RESILIENT STYLES
-   Arquitectura de diseño orientada a alta legibilidad, ergonomía cognitiva
+   Arquitectura de diseÃ±o orientada a alta legibilidad, ergonomÃ­a cognitiva
    en turnos extensos y comportamiento responsivo industrial.
    ========================================================================== */
 
 :root {
-  --staff-bg-main: #0c0e12;
-  --staff-bg-card: #15181e;
-  --staff-bg-card-hover: #1b1f28;
-  --staff-bg-elevated: #202632;
-  --staff-border: rgba(255, 255, 255, 0.08);
-  --staff-border-focus: rgba(255, 255, 255, 0.25);
-  
-  --staff-text-primary: #f2f4f8;
-  --staff-text-secondary: #96a1b2;
-  --staff-text-muted: #646e7f;
-  
-  --staff-accent-primary: #3b82f6;
+  /* --- TEMA GOLDEN / NEGRO (HU-05: rediseÃ±o panel de validaciÃ³n) --- */
+  --staff-gold: #C9A86A;
+  --staff-gold-soft: rgba(201, 168, 106, 0.12);
+  --staff-gold-border: rgba(201, 168, 106, 0.28);
+
+  --staff-bg-main: #000000;
+  --staff-bg-card: #0a0a0a;
+  --staff-bg-card-hover: #111111;
+  --staff-bg-elevated: #141414;
+  --staff-border: rgba(201, 168, 106, 0.22);
+  --staff-border-focus: rgba(201, 168, 106, 0.55);
+
+  --staff-text-primary: #E8DCC0;
+  --staff-text-secondary: #D8C4A6;
+  --staff-text-muted: #8C7A5B;
+
+  --staff-accent-primary: #C9A86A;
   --staff-status-valid: #10b981;
   --staff-status-valid-bg: rgba(16, 185, 129, 0.12);
-  --staff-status-warning: #f59e0b;
-  --staff-status-warning-bg: rgba(245, 158, 11, 0.12);
+  --staff-status-warning: #C9A86A;
+  --staff-status-warning-bg: rgba(201, 168, 106, 0.14);
   --staff-status-error: #ef4444;
   --staff-status-error-bg: rgba(239, 68, 68, 0.12);
 
   --staff-radius-sm: 8px;
   --staff-radius-md: 12px;
   --staff-radius-lg: 16px;
-  
-  --staff-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --staff-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  --staff-shadow-sm: 0 4px 12px rgba(201, 168, 106, 0.10);
+  --staff-shadow-md: 0 8px 24px rgba(201, 168, 106, 0.16);
   --staff-transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Fondos globales del panel en negro puro */
+body,
+.staff-dashboard-page,
+.staff-terminal-container {
+  background: #000000;
 }
 
 /* --- Base & Wrapper --- */
@@ -61,7 +73,7 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   margin: 0 0 0.4rem 0;
-  color: #ffffff;
+  color: var(--staff-gold);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -232,8 +244,9 @@
 
 .staff-tab-btn.active {
   background: var(--staff-accent-primary);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(201, 168, 106, 0.35);
 }
 
 /* --- Metrics Strip (KPIs) --- */
@@ -279,7 +292,7 @@
 .staff-metric-number {
   font-size: 2.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--staff-gold);
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -396,7 +409,7 @@
 
 .staff-scanner-trigger:hover {
   border-color: var(--staff-accent-primary);
-  background: rgba(59, 130, 246, 0.05);
+  background: rgba(201, 168, 106, 0.05);
   transform: scale(0.995);
 }
 
@@ -599,13 +612,13 @@
 
 .staff-section-card.active {
   border: 2px solid var(--staff-accent-primary);
-  background: rgba(59, 130, 246, 0.08);
+  background: rgba(201, 168, 106, 0.07);
 }
 
 .staff-section-name {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--staff-gold);
   margin-bottom: 0.5rem;
 }
 
@@ -646,7 +659,7 @@
   align-items: center;
   font-size: 1.35rem;
   font-weight: 900;
-  color: #ffffff;
+  color: var(--staff-gold);
   border-top: 1px solid var(--staff-border);
   padding-top: 1rem;
 }
@@ -772,7 +785,7 @@
 .staff-form-select:focus,
 .staff-form-textarea:focus {
   border-color: var(--staff-accent-primary);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(201, 168, 106, 0.25);
 }
 
 .staff-form-textarea {
@@ -899,4 +912,60 @@
   .staff-shortcut-card {
     padding: 1.1rem;
   }
+}
+
+/* ==========================================================================
+   HU-05 - Clases de utilidad (sustituyen estilos inline de StaffTerminal.jsx)
+   ========================================================================== */
+.staff-inline-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.staff-inline-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.staff-inline-row > .btn {
+  flex: 1;
+  min-width: 160px;
+}
+
+.staff-alert-banner {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  background: var(--staff-status-error-bg);
+  border: 1px solid var(--staff-status-error);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.staff-metric-suffix {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.staff-metric-number.is-valid {
+  color: var(--staff-status-valid);
+}
+
+.staff-metric-number.is-error {
+  color: var(--staff-status-error);
+}
+
+.staff-redeem-btn {
+  margin-bottom: 0.75rem;
+}
+
+.staff-stats-block {
+  margin-top: 2.5rem;
 }
