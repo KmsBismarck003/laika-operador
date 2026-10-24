@@ -1,16 +1,19 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import api from '../../../services/api';
 import { useAuth } from '../../../context/AuthContext';
-import { useNotification } from '../../../context/NotificationContext';
+import { useAccessPoint } from './useAccessPoint';
+import { useScanHistory } from './useScanHistory';
+import { useAssignedEvents } from './useAssignedEvents';
+import { useTicketVerification } from './useTicketVerification';
 
+// Fachada: compone los hooks SRP en una sola API (misma firma que la versión monolítica,
+// por lo que los consumidores existentes no cambian)
 export const useStaffTerminal = () => {
     const { user } = useAuth();
-    const { success, error: showError } = useNotification();
     const navigate = useNavigate();
     const location = useLocation();
 
-    // 1. Navigation Logic
+    // 1. Navegación por pestañas (?tab=scanner|helpdesk|boxoffice)
     const [activeTab, setActiveTab] = useState('scanner');
 
     useEffect(() => {
@@ -26,156 +29,15 @@ export const useStaffTerminal = () => {
         navigate(`/staff?tab=${tab}`);
     }, [navigate]);
 
-    // 2. Event Selection
-    const [selectedEventId, setSelectedEventId] = useState('');
-    const [events, setEvents] = useState([]);
+    // 2-4. Lógica delegada en hooks especializados
+    const { accessPoint, setAccessPoint } = useAccessPoint();
+    const { scanHistory, pushResult, markRedeemed, sessionStats } = useScanHistory();
+    const { selectedEventId, setSelectedEventId, events, fetchEvents } = useAssignedEvents();
+    const { ticketCode, setTicketCode, verificationResult, loading, alert, setAlert, isScanning, setIsScanning, handleVerifyTicket, handleRedeemTicket, resetScanner } = useTicketVerification({ accessPoint, pushResult, markRedeemed });
 
-    const fetchEvents = useCallback(async () => {
-        try {
-            const data = await api.event.getAll({ status_filter: 'published' });
-            setEvents(data);
-            if (data.length > 0 && !selectedEventId) {
-                setSelectedEventId(data[0].id);
-            }
-        } catch (err) {
-            console.error('Error fetching events:', err);
-        }
-    }, [selectedEventId]);
-
-    // 3. Scanner & Verification Logic
-    const [ticketCode, setTicketCode] = useState('');
-    const [verificationResult, setVerificationResult] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState(null);
-    const [scanHistory, setScanHistory] = useState([]);
-    const [isScanning, setIsScanning] = useState(false);
-    const [accessPoint, setAccessPoint] = useState(() => localStorage.getItem('staff_access_point') || 'Puerta Principal');
-
-    // Persist access point
-    useEffect(() => {
-        localStorage.setItem('staff_access_point', accessPoint);
-    }, [accessPoint]);
-
-    // Initial Load (History and Events)
     useEffect(() => {
         fetchEvents();
-        const savedHistory = localStorage.getItem('staff_scan_history');
-        if (savedHistory) {
-            try {
-                setScanHistory(JSON.parse(savedHistory));
-            } catch (e) {
-                console.error('Error parsing scan history', e);
-            }
-        }
     }, [fetchEvents]);
-
-    // Sync History
-    useEffect(() => {
-        localStorage.setItem('staff_scan_history', JSON.stringify(scanHistory));
-    }, [scanHistory]);
-
-    const handleVerifyTicket = async (code) => {
-        const codeToVerify = code || ticketCode;
-        if (!codeToVerify || !codeToVerify.trim()) {
-            setAlert({ type: 'error', message: 'Ingresa un código de boleto' });
-            return;
-        }
-
-        setLoading(true);
-        setAlert(null);
-        setIsScanning(false);
-
-        try {
-            const context = {
-                platform: 'WEB_OPERATOR',
-                accessPoint: accessPoint
-            };
-            const response = await api.ticket.verify(codeToVerify, context);
-            
-            let mappedStatus = 'invalid';
-            if (response.actionable || (response.valid && !response.alreadyUsed)) mappedStatus = 'valid';
-            else if (response.alreadyUsed || response.statusCode === 'ALREADY_REDEEMED') mappedStatus = 'used';
-            else if (response.statusCode === 'FUTURE_EVENT') mappedStatus = 'future';
-            else if (response.statusCode === 'CONCLUDED_EVENT') mappedStatus = 'concluded';
-            else if (response.statusCode === 'WRONG_FUNCTION') mappedStatus = 'warning';
-
-            const result = {
-                valid: response.valid || false,
-                actionable: response.actionable !== undefined ? response.actionable : (response.valid && !response.alreadyUsed),
-                isError: response.isError || false,
-                statusCode: response.statusCode || mappedStatus,
-                statusTitle: response.statusTitle || null,
-                operatorMessage: response.operatorMessage || response.message || null,
-                timeRemainingSeconds: response.timeRemainingSeconds || 0,
-                status: mappedStatus,
-                ticketCode: codeToVerify,
-                eventName: response.event?.name || response.eventName || 'Evento desconocido',
-                customerName: response.customer?.name || response.customerName || 'Usuario',
-                ticketType: response.ticketType || response.ticket_type || 'General',
-                purchaseDate: response.purchaseDate || response.purchase_date || new Date().toISOString(),
-                scannedAt: new Date().toISOString(),
-                alreadyUsed: response.alreadyUsed || response.already_used || false,
-                ticketId: response.id || response.ticketId,
-                message: response.operatorMessage || response.message
-            };
-
-            setVerificationResult(result);
-            setTicketCode('');
-            setScanHistory(prev => [result, ...prev.slice(0, 19)]);
-
-            if (result.actionable || (result.valid && !result.alreadyUsed)) {
-                success('Boleto válido y listo para ingreso');
-            } else if (result.alreadyUsed || result.statusCode === 'ALREADY_REDEEMED') {
-                showError('ALERTA: Boleto YA USADO');
-            } else {
-                showError(result.operatorMessage || 'Boleto inválido o en estado no canjeable');
-            }
-        } catch (error) {
-            console.error('Error al verificar:', error);
-            setAlert({ type: 'error', message: error.message || 'Error de conexión' });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleRedeemTicket = async () => {
-        if (!verificationResult || (!verificationResult.actionable && !verificationResult.valid) || verificationResult.alreadyUsed) return;
-        try {
-            const context = {
-                platform: 'WEB_OPERATOR',
-                accessPoint: accessPoint
-            };
-            await api.ticket.redeem(verificationResult.ticketCode, context);
-            success('Entrada registrada exitosamente');
-            setVerificationResult(prev => ({ ...prev, alreadyUsed: true, actionable: false, status: 'used', statusCode: 'REDEEMED_SUCCESS', statusTitle: 'INGRESO REGISTRADO' }));
-            setScanHistory(prev => prev.map((item, index) =>
-                index === 0 ? { ...item, alreadyUsed: true, actionable: false, status: 'used', statusCode: 'REDEEMED_SUCCESS' } : item
-            ));
-        } catch (error) {
-            showError(error.message || 'Error al registrar entrada');
-        }
-    };
-
-    const resetScanner = useCallback(() => {
-        setVerificationResult(null);
-        setAlert(null);
-        setTicketCode('');
-        setIsScanning(true);
-    }, []);
-
-    // 4. Session Metrics
-    const sessionStats = useMemo(() => {
-        const now = new Date();
-        const start = new Date();
-        start.setHours(now.getHours() - 1); // Mock start time if not found
-
-        return {
-            total: scanHistory.length,
-            valids: scanHistory.filter(h => h.status === 'valid' || h.status === 'used').length,
-            invalids: scanHistory.filter(h => h.status === 'invalid').length,
-            startTime: start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-    }, [scanHistory]);
 
     return {
         // State
@@ -191,7 +53,7 @@ export const useStaffTerminal = () => {
         isScanning,
         accessPoint,
         sessionStats,
-        
+
         // Setters/Handlers
         setTicketCode,
         setSelectedEventId,
