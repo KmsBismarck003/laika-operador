@@ -17,11 +17,11 @@ export const publicRoutes = [
 ]
 
 export const staffRoutes = [
-  { path: '/staff/dashboard', element: StaffDashboard, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Panel Control Staff' },
-  { path: '/staff', element: StaffTerminal, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Verificación de Boletos' },
-  { path: '/staff/history', element: StaffHistory, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Historial de Verificaciones' },
-  { path: '/staff/incidents', element: StaffIncidents, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Incidencias' },
-  { path: '/staff/events', element: AssignedEvents, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Eventos Asignados' }
+  { path: '/staff/dashboard', element: StaffDashboard, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Panel de Staff' },
+  { path: '/staff', element: StaffTerminal, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Lector de Entradas' },
+  { path: '/staff/history', element: StaffHistory, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Registro de Accesos' },
+  { path: '/staff/incidents', element: StaffIncidents, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Reporte de Problemas' },
+  { path: '/staff/events', element: AssignedEvents, layout: 'dashboard', allowedRoles: ['operador', 'admin'], title: 'Mis Asignaciones' }
 ]
 
 export const allRoutes = [...publicRoutes, ...staffRoutes]
